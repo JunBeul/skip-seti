@@ -10,6 +10,44 @@ import keyboard
 # 버전관리
 VERSION = "1.2.4"
 
+LOGIN_URL = 'https://www.seti.go.kr/system/login/login.do'
+SPACE_HOLD_EXIT_SECONDS = 3
+VIDEO_CHANGE_WAIT_SECONDS = 3
+LOOP_SLEEP_SECONDS = 1
+SPACE_POLL_INTERVAL = 0.1
+
+GET_VIDEO_SRC_JS = """
+const video = document.querySelector('video');
+return video ? (video.currentSrc || video.src || null) : null;
+"""
+
+CLICK_BIG_PLAY_JS = """document.querySelector(".vjs-big-play-button")?.click();"""
+
+PREPARE_PAGE_JS = """
+const quizPage = document.querySelector('#quizPage');
+if (quizPage?.src) {
+    if (typeof showPlayer === 'function') {
+        showPlayer();
+    }
+    document.querySelector('#next-btn')?.click();
+}
+
+const video = document.querySelector('video');
+if (video && !video.dataset.skipSetiEndedBound) {
+    video.dataset.skipSetiEndedBound = '1';
+    video.addEventListener('ended', function() {
+        document.querySelector('#next-btn')?.click();
+    });
+}
+"""
+
+
+def get_video_src(driver):
+    try:
+        return driver.execute_script(GET_VIDEO_SRC_JS)
+    except Exception:
+        return None
+
 def main():
     driver = None
     try:
@@ -25,7 +63,7 @@ def main():
         driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
         
         # 시작 준비
-        driver.get('https://www.seti.go.kr/system/login/login.do')
+        driver.get(LOGIN_URL)
         
         while True:
             print_welcome_message()
@@ -40,7 +78,10 @@ def main():
         
     finally:
         if driver:
-            driver.quit()
+            try:
+                driver.quit()
+            except Exception:
+                pass
         print("프로그램이 종료됩니다.")
         os._exit(0)  # Forcefully exit the program
 
@@ -76,21 +117,11 @@ def switch_to_classroom_window(driver):
 
 def video_play_script(driver):
     """재생 자바스크립트 실행"""
-    script = """document.querySelector(".vjs-big-play-button")?.click()"""
-    driver.execute_script(script)
+    driver.execute_script(CLICK_BIG_PLAY_JS)
 
 def execute_script(driver):
     """스킵 자바스크립트 실행"""
-    script = """
-    if (document.querySelector("#quizPage").src) {
-        showPlayer();
-        document.querySelector("#next-btn")?.click();
-    }
-    document.getElementsByTagName('video')[0].addEventListener('ended', function() {
-        document.querySelector("#next-btn")?.click();
-    });
-    """
-    driver.execute_script(script)
+    driver.execute_script(PREPARE_PAGE_JS)
 
 def loop_macro(driver):
     """매크로 시작"""
@@ -101,25 +132,25 @@ def loop_macro(driver):
 
     n = 0
     skipVideo = 0
-    previous_video_src = driver.execute_script("return document.getElementsByTagName('video')[0].src")
+    previous_video_src = get_video_src(driver)
     while True:
         if keyboard.is_pressed('space'):
-            start_time = time.time()
+            start_time = time.monotonic()
             sys.stdout.write('\r\033[K')
             while keyboard.is_pressed('space'):
-                elapsed_time = time.time() - start_time
+                elapsed_time = time.monotonic() - start_time
                 sys.stdout.write(f'\r{3-elapsed_time:.1f}초 후 재시작.')
                 sys.stdout.flush()
-                time.sleep(0.1)
-                if elapsed_time >= 3:
+                time.sleep(SPACE_POLL_INTERVAL)
+                if elapsed_time >= SPACE_HOLD_EXIT_SECONDS:
                     return
         
-        current_video_src = driver.execute_script("return document.getElementsByTagName('video')[0].src")
-        if current_video_src != previous_video_src:
+        current_video_src = get_video_src(driver)
+        if current_video_src and current_video_src != previous_video_src:
             sys.stdout.write('\r\033[K')
             sys.stdout.write(f'\r다음 차시로 넘어가는 중 입니다.')
             sys.stdout.flush()
-            time.sleep(3)
+            time.sleep(VIDEO_CHANGE_WAIT_SECONDS)
             execute_script(driver)
             previous_video_src = current_video_src
             skipVideo += 1
@@ -128,7 +159,7 @@ def loop_macro(driver):
         sys.stdout.flush()
 
         n = (n + 1) % 100
-        time.sleep(1)
+        time.sleep(LOOP_SLEEP_SECONDS)
 
 if __name__ == '__main__':
     main()
