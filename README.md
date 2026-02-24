@@ -38,13 +38,7 @@ PyInstaller가 없다면 먼저 설치합니다.
 pip install pyinstaller
 ```
 
-### 방법 1: 배치 파일 사용
-
-```powershell
-.\porting.bat
-```
-
-### 방법 2: spec 파일 사용
+### 방법: spec 파일 사용
 
 ```powershell
 pyinstaller skipSeti.spec
@@ -53,9 +47,3 @@ pyinstaller skipSeti.spec
 빌드 결과물:
 
 - `dist\\skipSeti.exe`
-
-## Git 관리 메모 (간단)
-
-- 소스/설정 파일만 커밋 (`skipSeti.py`, `skipSeti.spec`, `porting.bat`, `assets/*`)
-- 빌드 산출물은 커밋하지 않음 (`build/`, `dist/`)
-- 레거시 참고 파일은 목적이 보이게 이름 유지 (`legacy_*`)
