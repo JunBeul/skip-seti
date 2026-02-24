@@ -1,1 +1,1 @@
-pyinstaller -F -i="skipSeti.ico" "skipSeti.py"
+pyinstaller -F -i="assets/skipSeti.ico" "skipSeti.py"
