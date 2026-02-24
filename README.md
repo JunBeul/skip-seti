@@ -2,6 +2,25 @@
 
 SETI 사이트 학습 진행을 보조하는 Selenium 기반 매크로 프로젝트입니다.
 
+## 프로젝트 구조
+
+```text
+skip-seti/
+├─ assets/                # 아이콘/이미지 리소스
+├─ legacy/                # 이전 버전 참고 코드
+├─ scripts/               # 보조 스크립트/실험용 코드
+├─ skipSeti.py            # 메인 실행 스크립트
+├─ skipSeti.spec          # PyInstaller 빌드 설정
+├─ requirements.txt       # Python 의존성 목록
+├─ README.md              # 실행/빌드 문서
+└─ .gitignore             # Git 제외 규칙
+```
+
+참고:
+
+- `build/`, `dist/`는 PyInstaller 빌드 결과 폴더이며 Git에서 제외합니다.
+- `.venv/`는 로컬 가상환경 폴더이며 Git에서 제외합니다.
+
 ## 환경
 
 - Windows (키 입력 감지 `keyboard` 사용)
