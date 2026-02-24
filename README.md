@@ -2,24 +2,15 @@
 
 SETI 사이트 학습 진행을 보조하는 Selenium 기반 매크로 프로젝트입니다.
 
-## 프로젝트 구조
+## 기술 스택
 
-```text
-skip-seti/
-├─ assets/                # 아이콘/이미지 리소스
-├─ legacy/                # 이전 버전 참고 코드
-├─ scripts/               # 보조 스크립트/실험용 코드
-├─ skipSeti.py            # 메인 실행 스크립트
-├─ skipSeti.spec          # PyInstaller 빌드 설정
-├─ requirements.txt       # Python 의존성 목록
-├─ README.md              # 실행/빌드 문서
-└─ .gitignore             # Git 제외 규칙
-```
-
-참고:
-
-- `build/`, `dist/`는 PyInstaller 빌드 결과 폴더이며 Git에서 제외합니다.
-- `.venv/`는 로컬 가상환경 폴더이며 Git에서 제외합니다.
+<p>
+  <img alt="Python" src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white">
+  <img alt="Selenium" src="https://img.shields.io/badge/Selenium-43B02A?style=for-the-badge&logo=selenium&logoColor=white">
+  <img alt="Google Chrome" src="https://img.shields.io/badge/Google%20Chrome-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white">
+  <img alt="Windows" src="https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white">
+  <img alt="PyInstaller" src="https://img.shields.io/badge/PyInstaller-FF6F00?style=for-the-badge&logo=python&logoColor=white">
+</p>
 
 ## 환경
 
