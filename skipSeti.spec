@@ -1,12 +1,19 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+from PyInstaller.utils.hooks import collect_submodules
+
+hiddenimports = (
+    collect_submodules('selenium')
+    + collect_submodules('webdriver_manager')
+    + collect_submodules('keyboard')
+)
 
 a = Analysis(
     ['skipSeti.py'],
     pathex=[],
     binaries=[],
     datas=[],
-    hiddenimports=[],
+    hiddenimports=hiddenimports,
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
